@@ -20,7 +20,7 @@ $.getJSON("/promotions", function(data) {
     var promoShort = promoSplit.join(" ") + "...";
 
     var promoInfo = $("<div>");
-    promoInfo.append("<strong>" + data[i].site + "<strong/>");
+    promoInfo.append("<strong>" + data[i].location + "<strong/>");
     promoInfo.append(promoShort);
     $("#promotions").append(promoInfo);
 

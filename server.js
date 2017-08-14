@@ -59,9 +59,10 @@ app.get("/scrape", function(req, res) {
 
         $("div.special-listing-item-body").each(function(i, element) {
           promo = $(this).children().text();
-          var location = site.splice
+          var location = site.slice(12, -4);
           result.site = site;
           result.promo = promo;
+          result.location = location;
           var entry = new Promotion(result);
 
           // still having trouble grabbing images due to asynchronisity, need to work with the nested for each's to get the correct image src to save with each entry
@@ -109,7 +110,7 @@ app.get("/promotions", function(req, res) {
   });
 });
 
-// Grab an promotion by it's ObjectId
+// Grab a promotion by it's ObjectId
 // app.get("/promotions/:id", function(req, res) {
 //   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
 //   Promotion.findOne({ "_id": req.params.id })

@@ -19,6 +19,11 @@ var PromotionSchema = new Schema({
   promo: {
     type: String,
     require: false
+  },
+
+  location: {
+    type: String,
+    require: false
   }
 });
 
