@@ -3,7 +3,6 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-var Note = require("./models/Note.js");
 var Promotion = require("./models/Promotion.js");
 var request = require("request");
 var cheerio = require("cheerio");
