@@ -18,12 +18,17 @@ var PromotionSchema = new Schema({
 
   promo: {
     type: String,
-    require: false
+    require: true,
+    unique: true
   },
 
   location: {
     type: String,
     require: false
+  },
+  title: {
+    type: String,
+    require: true
   }
 });
 

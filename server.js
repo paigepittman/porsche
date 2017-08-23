@@ -4,6 +4,8 @@ var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var Promotion = require("./models/Promotion.js");
+var urls = require("./models/domains.js");
+// var Location = require("./models/Location.js")
 var request = require("request");
 var cheerio = require("cheerio");
 mongoose.Promise = Promise;
@@ -11,9 +13,10 @@ var app = express();
 app.use(logger("dev"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static("public"));
+// app.set('view engine', 'html');
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/myapp");
+mongoose.connect("mongodb://localhost/myapp2");
 var db = mongoose.connection;
 db.on("error", function(error) {
   console.log("Mongoose Error: ", error);
@@ -23,14 +26,12 @@ db.once("open", function() {
 });
 
 
-// Routes
-// ======
+// Routes //
 
 
 app.get("/scrape", function(req, res) {
-  console.log("scrape");
+  // console.log(urls);
 
-  var urls = ["https://circleporsche.com/specials/", "https://www.beverlyhillsporsche.com/specials/", "https://porschemarin.com/specials/"];
 
   urls.forEach(function(el) {
 
@@ -39,15 +40,20 @@ app.get("/scrape", function(req, res) {
       var host = this.uri.host;
       var site;
       var result = {};
+      var locationResult = {};
+      var promosArray = [];
       //formatting for various host strings
       if (host.startsWith("www")) {
-        console.log(host)
+        // console.log(host)
         site = "https://" + host;
 
       } else {
-        console.log(host)
+        // console.log(host)
         site = "https://www." + host;
       }
+
+      var imageURL = "https://" + site.slice(12);
+      console.log (imageURL);
 
       var $ = cheerio.load(html);
       //grabbing each specials div
@@ -55,40 +61,32 @@ app.get("/scrape", function(req, res) {
         var image;
         var promo;
         var price;
-        ///nested for each to pick up the promotion info
 
         $("div.special-listing-item-body").each(function(i, element) {
-          promo = $(this).children().text();
+          promo = $(this).children("p").text();
+          var title = $(this).children(".special-listing-item-body-inner-top").text();
+
+          image = $(this).prev("div.special-listing-item-image").children().attr("src");
+
           var location = site.slice(12, -4);
           result.site = site;
           result.promo = promo;
+          result.title = title;
           result.location = location;
-          var entry = new Promotion(result);
-
-          // still having trouble grabbing images due to asynchronisity, need to work with the nested for each's to get the correct image src to save with each entry
-          // result.image = site + image;
-
+          result.image = imageURL + image;
 
           // need to create if statements to cut out any random unncessary promos before they reach the DB
-
+          var entry = new Promotion(result);
             entry.save(function(err, doc) {
 
               if (err) {
-                console.log(err);
+                // console.log(err);
 
               } else {
 
-                console.log(doc);
-
-
-              }
-
-            });
-          // }
-
-
+            }
+          });
         });
-
       });
     });
   });
@@ -96,7 +94,9 @@ app.get("/scrape", function(req, res) {
   res.send("Scrape Complete");
 });
 
-// This will get the promotionss we scraped from the mongoDB
+
+/////////////////GRABS ALL DATA SUCCESSFULLY/////////////////////////
+// // This will get the promotionss we scraped from the mongoDB
 app.get("/promotions", function(req, res) {
   // Grab every doc in the Promotions array
   Promotion.find({}, function(error, doc) {
@@ -109,57 +109,41 @@ app.get("/promotions", function(req, res) {
     }
   });
 });
+///////////////////////////////////////////////////////////////////
 
-// Grab a promotion by it's ObjectId
-// app.get("/promotions/:id", function(req, res) {
-//   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-//   Promotion.findOne({ "_id": req.params.id })
-//   // ..and populate all of the notes associated with it
-//   .populate("note")
-//   // now, execute our query
-//   .exec(function(error, doc) {
-//     // Log any errors
-//     if (error) {
-//       console.log(error);
-//     }
-//     // Otherwise, send the doc to the browser as a json object
-//     else {
-//       res.json(doc);
-//     }
-//   });
-// });
 
-// Create a new note or replace an existing note
-// app.post("/promotions/:id", function(req, res) {
-//   // Create a new note and pass the req.body to the entry
-//   var newNote = new Note(req.body);
-//
-//   // And save the new note the db
-//   newNote.save(function(error, doc) {
-//     // Log any errors
-//     if (error) {
-//       console.log(error);
-//     }
-//     // Otherwise
-//     else {
-//       // Use the promotion id to find and update it's note
-//       Promotion.findOneAndUpdate({ "_id": req.params.id }, { "note": doc._id })
-//       // Execute the above query
-//       .exec(function(err, doc) {
-//         // Log any errors
-//         if (err) {
-//           console.log(err);
-//         }
-//         else {
-//           // Or send the document to the browser
-//           res.send(doc);
-//         }
-//       });
-//     }
-//   });
-// });
+
+
+//GRABS SPECIFIC STORES///
+app.get("/promotions/:location?", function(req, res) {
+  // Grab every doc in the Promotions array
+  Promotion.find({location: req.params.location}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error// Or send the doc to the browser as a json object
+      );
+    } else {
+      res.json(doc);
+    }
+  });
+});
+
+
+app.get("/fullpromo/:id?", function(req, res) {
+  // Grab every doc in the Promotions array
+  Promotion.findOne({_id: req.params.id}, function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error// Or send the doc to the browser as a json object
+      );
+    } else {
+      res.json(doc);
+    }
+  });
+});
+
 
 // Listen on port 3000
-app.listen(3000, function() {
-  console.log("App running on port 3000!");
+app.listen(5000, function() {
+  console.log("App running on port 5000!");
 });

@@ -1,8 +1,60 @@
+var orderArray = [];
+var locations = [];
+
+
+// $(document).ready(function() {
+//     $('#modal1').modal();
+// });
 // Grab the promotions as a json
 $.getJSON("/promotions", function(data) {
+  $("#promotions").append("<th> LOCATION </th>  <th> NUMBER OF PROMOTIONS </th>");
+
+  /////for TESTING DO NOT KEEP////////
+  // for (var i = 0; i < data.length; i++) {
+  //   var promoInfo = $("<tr>" + "<td>" + "<a class ='location' data-name=" + data[i].location + ">" + data[i].location + "</a>" + "<td/>" + "<td>" + data[i].title + "</td>" +  "<td>" + "</tr>");
+  //   $("#promotions").append(promoInfo);
+// }
+
   // For each one
-  for (var i = 0; i < data.length; i++) {
-    console.log(data[i]);
+
+  console.log(data.length)
+  console.log(data)
+
+
+  data.forEach(function(el) {
+
+    if (locations.indexOf(el.location) === -1) {
+      locations.push(el.location);
+      var locationPromos = promoCheck(el.location);
+
+      }
+    });
+
+
+  });
+
+
+
+  function promoCheck(location) {
+
+
+    $.ajax({
+      method: "GET",
+      url: "/promotions/" + location
+    })
+      // With that done, add the note information to the page
+      .done(function(data) {
+        if (data.length <= 3) {
+          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length + "</span></td></tr>");
+          $("#promotions").append(locationRow);
+        } else {
+          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + data.length + "</td></tr>");
+          $("#promotions").append(locationRow);
+        }
+
+  });
+
+};
 
     /////// for displaying images ///////
 
@@ -13,80 +65,157 @@ $.getJSON("/promotions", function(data) {
     // $("#promotions").append(promoImage);
 
 
-    /////// for displaying promo info//////
+// Whenever someone clicks a location
+$(document).on("click", ".location", function() {
 
-    //trims the promo string down and adds "..." - eventually will have a click to view full promo
-    var promoSplit = data[i].promo.split(" ", 15);
-    var promoShort = promoSplit.join(" ") + "...";
-
-    var promoInfo = $("<div>");
-    promoInfo.append("<strong>" + data[i].location + "<strong/>");
-    promoInfo.append(promoShort);
-    $("#promotions").append(promoInfo);
-
-   }
-});
-
-
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
-  // Empty the notes from the note section
-  $("#notes").empty();
-  // Save the id from the p tag
-  var thisId = $(this).attr("data-id");
-
-  // Now make an ajax call for the Promotion
+  var locationID = $(this).attr("data-name");
+  $("#promotions").html("");
+  $("store-selected").html(locationID);
   $.ajax({
     method: "GET",
-    url: "/promotions/" + thisId
+    url: "/promotions/" + locationID
   })
-    // With that done, add the note information to the page
     .done(function(data) {
-      console.log(data);
-      // The title of the promotion
-      $("#notes").append("<h2>" + data.title + "</h2>");
-      // An input to enter a new title
-      $("#notes").append("<input id='titleinput' name='title' >");
-      // A textarea to add a new note body
-      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-      // A button to submit a new note, with the id of the promotion saved to it
-      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 
-      // If there's a note in the promotion
-      if (data.note) {
-        // Place the title of the note in the title input
-        $("#titleinput").val(data.note.title);
-        // Place the body of the note in the body textarea
-        $("#bodyinput").val(data.note.body);
-      }
-    });
+      console.log(data);
+
+        $("#promotions").append("<th> TITLE </th> <th> PROMO </th> <th> IMAGE </th>");
+        // For each one
+        for (var i = 0; i < data.length; i++) {
+          console.log(data[i].image);
+
+
+          /////// for displaying promo info//////
+
+          //trims the promo string down and adds "..." - eventually will have a click to view full promo
+          var promoSplit = data[i].promo.split(" ", 8);
+          var promoShort = promoSplit.join(" ") + "...";
+          var imageDiv = $("<img>");
+          imageDiv.attr("src", data[i].image);
+
+          var promoInfo = $("<tr>" + "<td>" + data[i].title + "</td>" + "<td>" + "<a class=promo-full id=" + data[i]._id + ">" + promoShort.trim() + "</a>" + "<td>" + "<img src=" + data[i].image + "/>" + "</td></tr>");
+          $("#promotions").append(promoInfo);
+
+
+    };
+    $("#buttons").html("<button id='exportButton'> export PDF </button>");
+
+  });
 });
 
 // When you click the savenote button
-$(document).on("click", "#savenote", function() {
+$(document).on("click", ".promo-full", function() {
+ $('#modal1').modal();
+
   // Grab the id associated with the promotion from the submit button
-  var thisId = $(this).attr("data-id");
+  var promoId = $(this).attr("id");
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
-    method: "POST",
-    url: "/promotions/" + thisId,
-    data: {
-      // Value taken from title input
-      title: $("#titleinput").val(),
-      // Value taken from note textarea
-      body: $("#bodyinput").val()
-    }
+    method: "GET",
+    url: "/fullpromo/" + promoId
+
   })
-    // With that done
     .done(function(data) {
-      // Log the response
-      console.log(data);
-      // Empty the notes section
-      $("#notes").empty();
+      console.log("done")
+      console.log(data.promo)
+      // Modal Trigger
+/* <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> */
+// Modal Structure
+        $('#modal1').modal("open");
+        $("#modal-content").html(data.promo);
+      // var modal = &$("<div id='modal1' class='modal'>"
+      //             + "<div class='modal-content'>"
+      //             + "<h4>Modal Header</h4>"
+      //             + "<p>A bunch of text</p>"
+      //             + "</div>"
+      //             + "<div class='modal-footer'>"
+      //             + "<a href='#!' class='modal-action modal-close waves-effect waves-green btn-flat'>Agree</a>"
+      //             + "</div>"
+      //             + "</div>");
+
     });
 
-  // Also, remove the values entered in the input and textarea for note entry
-  $("#titleinput").val("");
-  $("#bodyinput").val("");
+
 });
+
+
+    var specialElementHandlers = {
+        '#editor': function (element,renderer) {
+            return true;
+        }
+    };
+ $('#exportButton').click(function () {
+        var doc = new jsPDF();
+        doc.fromHTML($('#target').html(), 15, 15, {
+            'width': 170,'elementHandlers': specialElementHandlers
+        });
+        doc.save('sample-file.pdf');
+    });
+
+
+/////Testing exporting table to excel
+
+        // $(document).on("click", "#exportButton", function () {
+        //     // parse the HTML table element having an id=exportTable
+        //     var dataSource = shield.DataSource.create({
+        //         data: "#promotions",
+        //         schema: {
+        //             type: "table",
+        //             fields: {
+        //                 Title: { type: String },
+        //                 Promo: { type: String },
+        //                 Image: { type: String }
+        //             }
+        //         }
+        //     });
+        //
+        //     // when parsing is done, export the data to Excel
+        //     dataSource.read().then(function (data) {
+        //         new shield.exp.OOXMLWorkbook({
+        //             author: "PrepBootstrap",
+        //             worksheets: [
+        //                 {
+        //                     name: "PrepBootstrap Table",
+        //                     rows: [
+        //                         {
+        //                             cells: [
+        //                                 {
+        //                                     style: {
+        //                                         bold: true
+        //                                     },
+        //                                     type: String,
+        //                                     value: "Name"
+        //                                 },
+        //                                 {
+        //                                     style: {
+        //                                         bold: true
+        //                                     },
+        //                                     type: String,
+        //                                     value: "Age"
+        //                                 },
+        //                                 {
+        //                                     style: {
+        //                                         bold: true
+        //                                     },
+        //                                     type: String,
+        //                                     value: "Email"
+        //                                 }
+        //                             ]
+        //                         }
+        //                     ].concat($.map(data, function(item) {
+        //                         return {
+        //                             cells: [
+        //                                 { type: String, value: item.Title },
+        //                                 { type: String, value: item.Promo },
+        //                                 { type: String, value: item.Image }
+        //                             ]
+        //                         };
+        //                     }))
+        //                 }
+        //             ]
+        //         }).saveAs({
+        //             fileName: "PrepBootstrapExcel"
+        //         });
+        //     });
+        // });
