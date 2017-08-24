@@ -28,6 +28,7 @@ mongoose.connect(db, function(error) {
   }
 });
 
+Promotion.collection.drop();
 
 // Routes //
 
