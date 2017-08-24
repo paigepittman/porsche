@@ -16,19 +16,40 @@ app.use(express.static("public"));
 // app.set('view engine', 'html');
 var PORT = process.env.PORT || 4000;
 
-// Database configuration with mongoose
-var db = process.env.MONGODB_URI || "mongodb://localhost/myapp2";
 
-mongoose.connect(db, function(error) {
-  if (error) {
-    console.log(error);
-  }
-  else {
-    console.log("mongoose connection is successful");
-  }
+var databaseUri = 'mongodb://localhost/myapp2';
+if (process.env.MONGODB_URI) {
+  mongoose.connect('mongodb://heroku_dmq351qc:aimougmur9vm8jicoou41eiudt@ds161121.mlab.com:61121/heroku_dmq351qc');
+}
+else {
+  mongoose.connect(databaseUri);
+}
+// Database configuration with mongoose
+// var db = process.env.MONGODB_URI || "mongodb://localhost/myapp2";
+var db = mongoose.connection;
+
+db.on("error", function(error) {
+  console.log("Mongoose Error: ", error);
 });
 
+db.once("open", function() {
+  console.log("Mongoose connection successful.");
+});
+
+
+// mongoose.connect(db, function(error) {
+//   if (error) {
+//     console.log(error);
+//   }
+//   else {
+//     console.log("mongoose connection is successful");
+//   }
+// });
+
 Promotion.collection.drop();
+
+
+//mongodb://heroku_zz8c1blm:n5fv7as1ac9ef0db2g8d7uqo0u@ds157873.mlab.com:57873/heroku_zz8c1blm
 
 // Routes //
 
