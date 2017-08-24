@@ -14,22 +14,25 @@ app.use(logger("dev"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static("public"));
 // app.set('view engine', 'html');
+var PORT = process.env.PORT || 4000;
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/myapp2");
-var db = mongoose.connection;
-db.on("error", function(error) {
-  console.log("Mongoose Error: ", error);
-});
-db.once("open", function() {
-  console.log("Mongoose connection successful.");
+var db = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+mongoose.connect(db, function(error) {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log("mongoose connection is successful");
+  }
 });
 
 
 // Routes //
 
 
-app.get("/scrape", function(req, res) {
+app.get("/", function(req, res) {
   // console.log(urls);
 
 
@@ -91,7 +94,7 @@ app.get("/scrape", function(req, res) {
     });
   });
 
-  res.send("Scrape Complete");
+  res.render("Scrape Complete");
 });
 
 
@@ -144,6 +147,6 @@ app.get("/fullpromo/:id?", function(req, res) {
 
 
 // Listen on port 3000
-app.listen(5000, function() {
-  console.log("App running on port 5000!");
+app.listen(PORT, function() {
+  console.log("App running on port" + PORT);
 });

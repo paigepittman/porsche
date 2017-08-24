@@ -56,15 +56,6 @@ $.getJSON("/promotions", function(data) {
 
 };
 
-    /////// for displaying images ///////
-
-    // var promoImage = $("<div>");
-    // promoImage.attr("class", "promo-image");
-    // promoImage.attr("id", data[i]._id);
-    // promoImage.append("<img src=" + data[i].image + "/>");
-    // $("#promotions").append(promoImage);
-
-
 // Whenever someone clicks a location
 $(document).on("click", ".location", function() {
 
@@ -99,6 +90,7 @@ $(document).on("click", ".location", function() {
 
     };
     $("#buttons").html("<button id='exportButton'> export PDF </button>");
+    $("#promotions").attr("class", "striped");
 
   });
 });
@@ -119,20 +111,9 @@ $(document).on("click", ".promo-full", function() {
     .done(function(data) {
       console.log("done")
       console.log(data.promo)
-      // Modal Trigger
-/* <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a> */
 // Modal Structure
         $('#modal1').modal("open");
         $("#modal-content").html(data.promo);
-      // var modal = &$("<div id='modal1' class='modal'>"
-      //             + "<div class='modal-content'>"
-      //             + "<h4>Modal Header</h4>"
-      //             + "<p>A bunch of text</p>"
-      //             + "</div>"
-      //             + "<div class='modal-footer'>"
-      //             + "<a href='#!' class='modal-action modal-close waves-effect waves-green btn-flat'>Agree</a>"
-      //             + "</div>"
-      //             + "</div>");
 
     });
 
