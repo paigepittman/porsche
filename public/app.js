@@ -2,36 +2,48 @@ var orderArray = [];
 var locations = [];
 
 
+
+$.get("/scrape")
+.then(function(data) {
+  displayStores();
+  console.log("done")
+})
 // $(document).ready(function() {
 //     $('#modal1').modal();
 // });
 // Grab the promotions as a json
-$.getJSON("/promotions", function(data) {
-  $("#promotions").append("<th> LOCATION </th>  <th> NUMBER OF PROMOTIONS </th>");
+function displayStores() {
+  console.log("stores")
+  $.getJSON("/promotions", function(data) {
+    $("#promotions").append("<th> LOCATION </th>  <th> NUMBER OF PROMOTIONS </th>");
 
-  /////for TESTING DO NOT KEEP////////
-  // for (var i = 0; i < data.length; i++) {
-  //   var promoInfo = $("<tr>" + "<td>" + "<a class ='location' data-name=" + data[i].location + ">" + data[i].location + "</a>" + "<td/>" + "<td>" + data[i].title + "</td>" +  "<td>" + "</tr>");
-  //   $("#promotions").append(promoInfo);
-// }
+    /////for TESTING DO NOT KEEP////////
+    // for (var i = 0; i < data.length; i++) {
+    //   var promoInfo = $("<tr>" + "<td>" + "<a class ='location' data-name=" + data[i].location + ">" + data[i].location + "</a>" + "<td/>" + "<td>" + data[i].title + "</td>" +  "<td>" + "</tr>");
+    //   $("#promotions").append(promoInfo);
+  // }
 
-  // For each one
+    // For each one
 
-  console.log(data.length)
-  console.log(data)
+    console.log(data.length)
+    console.log(data)
 
 
-  data.forEach(function(el) {
+    data.forEach(function(el) {
 
-    if (locations.indexOf(el.location) === -1) {
-      locations.push(el.location);
-      var locationPromos = promoCheck(el.location);
+      if (locations.indexOf(el.location) === -1) {
+        locations.push(el.location);
+        var locationPromos = promoCheck(el.location);
 
-      }
+        }
+      });
+
+
     });
 
+}
 
-  });
+
 
 
 

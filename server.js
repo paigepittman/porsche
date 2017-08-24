@@ -17,7 +17,7 @@ app.use(express.static("public"));
 var PORT = process.env.PORT || 4000;
 
 // Database configuration with mongoose
-var db = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+var db = process.env.MONGODB_URI || "mongodb://localhost/myapp2";
 
 mongoose.connect(db, function(error) {
   if (error) {
@@ -32,7 +32,7 @@ mongoose.connect(db, function(error) {
 // Routes //
 
 
-app.get("/", function(req, res) {
+app.get("/scrape", function(req, res) {
   // console.log(urls);
 
 
@@ -94,7 +94,7 @@ app.get("/", function(req, res) {
     });
   });
 
-  res.render("Scrape Complete");
+  res.redirect("/");
 });
 
 
