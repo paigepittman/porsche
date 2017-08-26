@@ -37,26 +37,14 @@ db.once("open", function() {
 });
 
 
-// mongoose.connect(db, function(error) {
-//   if (error) {
-//     console.log(error);
-//   }
-//   else {
-//     console.log("mongoose connection is successful");
-//   }
-// });
 
-Promotion.collection.drop();
-
-
-//mongodb://heroku_zz8c1blm:n5fv7as1ac9ef0db2g8d7uqo0u@ds157873.mlab.com:57873/heroku_zz8c1blm
 
 // Routes //
 
 
 app.get("/scrape", function(req, res) {
   // console.log(urls);
-
+  Promotion.collection.drop();
 
   urls.forEach(function(el) {
 
@@ -67,25 +55,48 @@ app.get("/scrape", function(req, res) {
       var result = {};
       var locationResult = {};
       var promosArray = [];
+      var category;
       //formatting for various host strings
       if (host.startsWith("www")) {
-        // console.log(host)
+
         site = "https://" + host;
 
       } else {
-        // console.log(host)
+
         site = "https://www." + host;
+      };
+
+
+      ///use url endings to create categories
+      if (el.endsWith("new/")) {
+        category = "new";
       }
+      else if (el.endsWith("specials/")) {
+        category = "specials";
+      }
+      else if (el.endsWith("used/")) {
+        category = "used";
+      }
+      else if (el.endsWith("service/")) {
+        category = "service";
+      }
+      else if (el.endsWith("parts/")) {
+        category = "parts";
+      };
+
+
+
 
       var imageURL = "https://" + site.slice(12);
       console.log (imageURL);
 
       var $ = cheerio.load(html);
-      //grabbing each specials div
+      //grabbing each "specials" div
       $("div.specials-listing-item").each(function(i, element) {
         var image;
         var promo;
         var price;
+
 
         $("div.special-listing-item-body").each(function(i, element) {
           promo = $(this).children("p").text();
@@ -99,6 +110,7 @@ app.get("/scrape", function(req, res) {
           result.title = title;
           result.location = location;
           result.image = imageURL + image;
+          result.category = category;
 
           // need to create if statements to cut out any random unncessary promos before they reach the DB
           var entry = new Promotion(result);

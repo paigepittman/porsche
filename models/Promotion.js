@@ -29,6 +29,10 @@ var PromotionSchema = new Schema({
   title: {
     type: String,
     require: true
+  },
+  category: {
+    type: String,
+    require: false
   }
 });
 

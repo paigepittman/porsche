@@ -2,28 +2,20 @@ var orderArray = [];
 var locations = [];
 
 
+$("#scrape-button").on("click", function() {
+  $.get("/scrape")
+  .then(function(data) {
+    displayStores();
+    console.log("done")
+  });
+});
 
-$.get("/scrape")
-.then(function(data) {
-  displayStores();
-  console.log("done")
-})
-// $(document).ready(function() {
-//     $('#modal1').modal();
-// });
+
 // Grab the promotions as a json
 function displayStores() {
   console.log("stores")
   $.getJSON("/promotions", function(data) {
     $("#promotions").append("<th> LOCATION </th>  <th> NUMBER OF PROMOTIONS </th>");
-
-    /////for TESTING DO NOT KEEP////////
-    // for (var i = 0; i < data.length; i++) {
-    //   var promoInfo = $("<tr>" + "<td>" + "<a class ='location' data-name=" + data[i].location + ">" + data[i].location + "</a>" + "<td/>" + "<td>" + data[i].title + "</td>" +  "<td>" + "</tr>");
-    //   $("#promotions").append(promoInfo);
-  // }
-
-    // For each one
 
     console.log(data.length)
     console.log(data)
@@ -38,13 +30,8 @@ function displayStores() {
         }
       });
 
-
     });
-
 }
-
-
-
 
 
   function promoCheck(location) {
@@ -81,7 +68,7 @@ $(document).on("click", ".location", function() {
     .done(function(data) {
 
       console.log(data);
-
+      $("#header").html(locationID);
         $("#promotions").append("<th> TITLE </th> <th> PROMO </th> <th> IMAGE </th>");
         // For each one
         for (var i = 0; i < data.length; i++) {
