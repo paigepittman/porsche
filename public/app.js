@@ -14,7 +14,7 @@ $("#scrape-button").on("click", function() {
   $.get("/scrape")
   .then(function(data) {
     console.log("DONE")
-    
+
 
     });
   });
@@ -82,7 +82,7 @@ function displayStores() {
 
 
         if (data.length <= 3) {
-          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length + "<td>" + data.category + "</td></tr>");
+          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length + "<td>" +  "</td></tr>");
           $("#promotions").append(locationRow);
         } else {
           var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + data.length + "</td></tr>");
