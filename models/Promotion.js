@@ -8,8 +8,8 @@ var PromotionSchema = new Schema({
   // title is a required string
   image: {
     type: String,
-    required: true,
-    unique: true
+    required: true
+
   },
 
   site: {
@@ -19,8 +19,7 @@ var PromotionSchema = new Schema({
 
   promo: {
     type: String,
-    require: true,
-    unique: true
+    require: true
   },
 
   location: {
@@ -29,14 +28,16 @@ var PromotionSchema = new Schema({
   },
   title: {
     type: String,
-    require: true,
-    unique: true
+    require: true
+
   },
   category: {
     type: String,
     require: false
   }
 });
+
+PromotionSchema.index({ location: 1, promo: 1 }, {unique: true});
 
 // Create the Promotion model with the PromotionSchema
 var Promotion = mongoose.model("Promotion", PromotionSchema);

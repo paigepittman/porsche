@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var Promotion = require("./models/Promotion.js");
+
 var urls = require("./models/domains.js");
 // var Location = require("./models/Location.js")
 var request = require("request");
@@ -42,6 +43,7 @@ db.once("open", function() {
 
 
 
+
 // Routes //
 
 // app.get("/stores", function(req, res) {
@@ -49,13 +51,14 @@ db.once("open", function() {
 // });
 
 
+Promotion.collection.drop();
 
 
 
 app.get("/scrape", function(req, res) {
   var count = 1;
   // console.log(urls);
-  Promotion.collection.drop();
+
 
   urls.forEach(function(el) {
 
