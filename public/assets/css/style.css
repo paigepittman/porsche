@@ -16,3 +16,20 @@ th {
 td {
   border: 1px solid black;
 }
+
+
+.preloader-wrapper {
+  visibility: hidden;
+}
+
+nav {
+  background-color: black;
+}
+
+#buttons {
+  margin-top: 70px;
+}
+
+.preloader-wrapper {
+  margin-top: 80px;
+}

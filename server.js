@@ -13,6 +13,9 @@ var app = express();
 app.use(logger("dev"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static("public"));
+
+var path = require("path");
+
 // app.set('view engine', 'html');
 var PORT = process.env.PORT || 4000;
 
@@ -41,8 +44,16 @@ db.once("open", function() {
 
 // Routes //
 
+// app.get("/stores", function(req, res) {
+//
+// });
+
+
+
+
 
 app.get("/scrape", function(req, res) {
+  var count = 1;
   // console.log(urls);
   Promotion.collection.drop();
 
@@ -106,18 +117,20 @@ app.get("/scrape", function(req, res) {
 
           var location = site.slice(12, -4);
           result.site = site;
-          result.promo = promo;
-          result.title = title;
+          result.promo = promo.trim();
+          result.title = title.trim();
           result.location = location;
           result.image = imageURL + image;
           result.category = category;
+          console.log(result);
 
           // need to create if statements to cut out any random unncessary promos before they reach the DB
           var entry = new Promotion(result);
+
             entry.save(function(err, doc) {
 
               if (err) {
-                // console.log(err);
+                console.log(err);
 
               } else {
 
@@ -126,9 +139,10 @@ app.get("/scrape", function(req, res) {
         });
       });
     });
-  });
 
+  });
   res.redirect("/");
+  console.log("doneeee")
 });
 
 

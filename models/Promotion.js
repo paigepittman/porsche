@@ -8,7 +8,8 @@ var PromotionSchema = new Schema({
   // title is a required string
   image: {
     type: String,
-    required: false
+    required: true,
+    unique: true
   },
 
   site: {
@@ -28,7 +29,8 @@ var PromotionSchema = new Schema({
   },
   title: {
     type: String,
-    require: true
+    require: true,
+    unique: true
   },
   category: {
     type: String,

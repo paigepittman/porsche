@@ -2,23 +2,34 @@ var orderArray = [];
 var locations = [];
 
 
+
+
+
+
+
 $("#scrape-button").on("click", function() {
+  $("#scrape-button").css("visibility", "hidden");
+  $(".preloader-wrapper").css("visibility", "visible");
+
   $.get("/scrape")
   .then(function(data) {
-    displayStores();
-    console.log("done")
+    console.log("DONE")
+    
+
+    });
   });
-});
+
+
 
 
 // Grab the promotions as a json
 function displayStores() {
   console.log("stores")
   $.getJSON("/promotions", function(data) {
-    $("#promotions").append("<th> LOCATION </th>  <th> NUMBER OF PROMOTIONS </th>");
+    $("#promotions").append("<th> LOCATION </th>  <th> ALL SPECIALS </th> ");
 
-    console.log(data.length)
-    console.log(data)
+    // console.log(data.length)
+    // console.log(data)
 
 
     data.forEach(function(el) {
@@ -41,10 +52,37 @@ function displayStores() {
       method: "GET",
       url: "/promotions/" + location
     })
-      // With that done, add the note information to the page
+
       .done(function(data) {
+
+        // var newSpecials = [];
+        // var usedSpecials = [];
+        // var serviceSpecials = [];
+        // var partsSpecials = [];
+        //
+        // function checkCategory() {
+        //   for (var i = 0; i < data.length; i++) {
+        //
+        //     if (data.category === "new") {
+        //       newSpecials.push(data[i]);
+        //     }
+        //     else if (data.category === "used") {
+        //       usedSpecials.push(data[i]);
+        //     }
+        //     else if (data.category === "service") {
+        //       serviceSpecials.push(data[i]);
+        //     }
+        //     else if (data.category === "parts") {
+        //       partsSpecials.push(data[i]);
+        //     };
+        //
+        //   }
+        // }
+
+
+
         if (data.length <= 3) {
-          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length + "</span></td></tr>");
+          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length + "<td>" + data.category + "</td></tr>");
           $("#promotions").append(locationRow);
         } else {
           var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + data.length + "</td></tr>");
@@ -68,8 +106,7 @@ $(document).on("click", ".location", function() {
     .done(function(data) {
 
       console.log(data);
-      $("#header").html(locationID);
-        $("#promotions").append("<th> TITLE </th> <th> PROMO </th> <th> IMAGE </th>");
+        $("#promotions").append("<th> TITLE </th> <th> CATEGORY </th> <th> PROMO </th> <th> IMAGE </th>");
         // For each one
         for (var i = 0; i < data.length; i++) {
           console.log(data[i].image);
@@ -83,13 +120,13 @@ $(document).on("click", ".location", function() {
           var imageDiv = $("<img>");
           imageDiv.attr("src", data[i].image);
 
-          var promoInfo = $("<tr>" + "<td>" + data[i].title + "</td>" + "<td>" + "<a class=promo-full id=" + data[i]._id + ">" + promoShort.trim() + "</a>" + "<td>" + "<img src=" + data[i].image + "/>" + "</td></tr>");
+          var promoInfo = $("<tr>" + "<td>" + data[i].title + "</td>" + "<td>" + data[i].category + "</td><td>" + "<a class=promo-full id=" + data[i]._id + ">" + promoShort.trim() + "</a>" + "<td>" + "<img src=" + data[i].image + "/>" + "</td></tr>");
           $("#promotions").append(promoInfo);
 
 
     };
-    $("#buttons").html("<button id='exportButton'> export PDF </button>");
-    $("#promotions").attr("class", "striped");
+    // $("#buttons").html("<button id='exportButton'> export PDF </button>");
+    // $("#promotions").attr("class", "striped");
 
   });
 });
