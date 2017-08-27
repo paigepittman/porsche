@@ -9,13 +9,11 @@ var locations = [];
 
 $("#scrape-button").on("click", function() {
   $("#scrape-button").css("visibility", "hidden");
-  $(".preloader-wrapper").css("visibility", "visible");
+
 
   $.get("/scrape")
   .then(function(data) {
     console.log("DONE")
-
-
     });
   });
 
@@ -26,7 +24,10 @@ $("#scrape-button").on("click", function() {
 function displayStores() {
   console.log("stores")
   $.getJSON("/promotions", function(data) {
-    $("#promotions").append("<th> LOCATION </th>  <th> ALL SPECIALS </th> ");
+$("#promotions").html("<table class='stripe' id='promo-table'>");
+$("#promo-table").append("<th>LOCATION</th>  <th> ALL SPECIALS </th> ");
+
+
 
     // console.log(data.length)
     // console.log(data)
@@ -55,6 +56,9 @@ function displayStores() {
 
       .done(function(data) {
 
+
+
+
         // var newSpecials = [];
         // var usedSpecials = [];
         // var serviceSpecials = [];
@@ -82,11 +86,11 @@ function displayStores() {
 
 
         if (data.length <= 3) {
-          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length + "<td>" +  "</td></tr>");
-          $("#promotions").append(locationRow);
+          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length +  "</td></tr>");
+          $("#promo-table").append(locationRow);
         } else {
           var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + data.length + "</td></tr>");
-          $("#promotions").append(locationRow);
+          $("#promo-table").append(locationRow);
         }
 
   });
@@ -97,8 +101,8 @@ function displayStores() {
 $(document).on("click", ".location", function() {
 
   var locationID = $(this).attr("data-name");
-  $("#promotions").html("");
-  $("store-selected").html(locationID);
+  
+  $("#header").html(locationID);
   $.ajax({
     method: "GET",
     url: "/promotions/" + locationID
@@ -106,7 +110,7 @@ $(document).on("click", ".location", function() {
     .done(function(data) {
 
       console.log(data);
-        $("#promotions").append("<th> TITLE </th> <th> CATEGORY </th> <th> PROMO </th> <th> IMAGE </th>");
+        $("#promo-table").html("<th> TITLE </th> <th> CATEGORY </th> <th> PROMO </th> <th> IMAGE </th>");
         // For each one
         for (var i = 0; i < data.length; i++) {
           console.log(data[i].image);
@@ -121,7 +125,7 @@ $(document).on("click", ".location", function() {
           imageDiv.attr("src", data[i].image);
 
           var promoInfo = $("<tr>" + "<td>" + data[i].title + "</td>" + "<td>" + data[i].category + "</td><td>" + "<a class=promo-full id=" + data[i]._id + ">" + promoShort.trim() + "</a>" + "<td>" + "<img src=" + data[i].image + "/>" + "</td></tr>");
-          $("#promotions").append(promoInfo);
+          $("#promo-table").append(promoInfo);
 
 
     };

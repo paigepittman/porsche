@@ -2,6 +2,14 @@
   color: black;
 }
 
+#promotions {
+  width: 100%;
+}
+
+body {
+  width: 100%;
+}
+
 table {
   margin: auto;
   width: 70%;
@@ -14,13 +22,14 @@ th {
 }
 
 td {
+  width: 50%;
   border: 1px solid black;
 }
 
 
-.preloader-wrapper {
+/*.preloader-wrapper {
   visibility: hidden;
-}
+}*/
 
 nav {
   background-color: black;

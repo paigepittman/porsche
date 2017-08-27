@@ -63,6 +63,16 @@ app.get("/scrape", function(req, res) {
   urls.forEach(function(el) {
 
     request(el, function(error, response, html) {
+      console.log(this.uri)
+      var hostString = this.uri.host.replace(".com", "");
+      var porscheString = hostString.replace("porsche", "");
+      var periodString = porscheString.replace(".", "");
+      var dashString = periodString.replace("-", " ");
+      var dealerString = dashString.replace("dealer", "");
+      var finalLocation = dealerString.replace("www", "");
+
+
+
 
       var host = this.uri.host;
       var site;
@@ -118,14 +128,14 @@ app.get("/scrape", function(req, res) {
 
           image = $(this).prev("div.special-listing-item-image").children().attr("src");
 
-          var location = site.slice(12, -4);
+          var location = finalLocation;
           result.site = site;
           result.promo = promo.trim();
           result.title = title.trim();
           result.location = location;
           result.image = imageURL + image;
           result.category = category;
-          console.log(result);
+          // console.log(result);
 
           // need to create if statements to cut out any random unncessary promos before they reach the DB
           var entry = new Promotion(result);
@@ -133,7 +143,7 @@ app.get("/scrape", function(req, res) {
             entry.save(function(err, doc) {
 
               if (err) {
-                console.log(err);
+                // console.log(err);
 
               } else {
 
