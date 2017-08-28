@@ -13,17 +13,21 @@ body {
 table {
   margin: auto;
   width: 70%;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
 }
 
 th {
   width: 50%;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
 }
 
 td {
   width: 50%;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
+}
+
+tr:nth-child(odd) {
+  background-color: #f2f2f2;
 }
 
 
@@ -33,6 +37,7 @@ td {
 
 nav {
   background-color: black;
+  width: 100%;
 }
 
 #buttons {

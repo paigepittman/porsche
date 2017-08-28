@@ -24,7 +24,7 @@ $("#scrape-button").on("click", function() {
 function displayStores() {
   console.log("stores")
   $.getJSON("/promotions", function(data) {
-$("#promotions").html("<table class='stripe' id='promo-table'>");
+$("#promotions").html("<table class='striped' id='promo-table'>");
 $("#promo-table").append("<th>LOCATION</th>  <th> ALL SPECIALS </th> ");
 
 
@@ -101,7 +101,7 @@ $("#promo-table").append("<th>LOCATION</th>  <th> ALL SPECIALS </th> ");
 $(document).on("click", ".location", function() {
 
   var locationID = $(this).attr("data-name");
-  
+
   $("#header").html(locationID);
   $.ajax({
     method: "GET",
