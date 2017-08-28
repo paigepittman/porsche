@@ -69,13 +69,13 @@ app.get("/scrape", function(req, res) {
       var periodString = porscheString.replace(".", "");
       var dashString = periodString.replace("-", " ");
       var dealerString = dashString.replace("dealer", "");
-      var finalLocation;
+      var finalLocation = dealerString.replace("www", "");
 
-      if (dealerString.startsWith("of") {
-        var ofString = dealerString.replace("www", "");
-        finalLocation = ofString.replace("of", "");
-      })
-        finalLocation = dealerString.replace("www", "");
+      // if (dealerString.startsWith("of") {
+      //   var ofString = dealerString.replace("www", "");
+      //   finalLocation = ofString.replace("of", "");
+      // })
+      //   finalLocation = dealerString.replace("www", "");
 
 
 
