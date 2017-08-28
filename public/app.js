@@ -86,7 +86,7 @@ $("#promo-table").append("<th>LOCATION</th>  <th> ALL SPECIALS </th> ");
 
 
         if (data.length <= 3) {
-          var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + "<span style='color:red'>" + data.length +  "</td></tr>");
+          var locationRow = $("<tr style='background-color:rgb(236, 114, 99)'><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + data.length +  "</td></tr>");
           $("#promo-table").append(locationRow);
         } else {
           var locationRow = $("<tr><td>" + "<a class ='location' data-name=" + location + ">" + location + "</a>" + "</td>" + "<td>" + data.length + "</td></tr>");
